@@ -301,11 +301,16 @@ def main(page: ft.Page):
     valid_exts = (".jpg", ".jpeg", ".png", ".JPG", ".PNG", ".JPEG")
     
     if os.path.exists(img_folder):
-        image_files = [f for f in os.listdir(img_folder) if f.endswith(valid_exts)]
+        image_files = []
+        for root, _dirs, files in os.walk(img_folder):
+            for f in files:
+                if f.endswith(valid_exts):
+                    rel = os.path.relpath(os.path.join(root, f), img_folder)
+                    image_files.append(rel.replace(os.sep, "/"))
         
         def sort_key(filename):
             try:
-                return int(filename.split('.')[0])
+                return int(os.path.basename(filename).split('.')[0])
             except ValueError:
                 return filename
         
